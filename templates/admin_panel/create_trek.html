@@ -1,0 +1,136 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h2>Create Trek</h2>
+
+<form method="post" enctype="multipart/form-data" class="mt-4">
+    {% csrf_token %}
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Title</label>
+            <input type="text" class="form-control" name="title" required>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label>Region</label>
+            <select class="form-select" name="region" required>
+                <option value="Annapurna">Annapurna</option>
+                <option value="Everest">Everest</option>
+                <option value="Langtang">Langtang</option>
+                <option value="Mustang">Mustang</option>
+                <option value="Manaslu">Manaslu</option>
+                <option value="Dolpo">Dolpo</option>
+                <option value="Kanchenjunga">Kanchenjunga</option>
+                <option value="Makalu">Makalu</option>
+                <option value="Rolwaling">Rolwaling</option>
+                <option value="Api-Nampa">Api-Nampa</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label>Minimum Duration (days)</label>
+            <input type="number" class="form-control" name="min_duration" required>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <label>Maximum Duration (days)</label>
+            <input type="number" class="form-control" name="max_duration" required>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <label>Max Altitude (meters)</label>
+            <input type="number" class="form-control" name="max_altitude" required>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Season (select at least one)</label><br>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="spring" id="spring">
+            <label class="form-check-label" for="spring">Spring</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="summer" id="summer">
+            <label class="form-check-label" for="summer">Summer</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="autumn" id="autumn">
+            <label class="form-check-label" for="autumn">Autumn</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="winter" id="winter">
+            <label class="form-check-label" for="winter">Winter</label>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Difficulty Level</label>
+            <select class="form-select" name="difficulty" required>
+                <option value="Easy">Easy</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Difficult">Difficult</option>
+                <option value="Extreme">Extreme</option>
+            </select>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label>Cost (USD)</label>
+            <input type="number" step="0.01" class="form-control" name="cost" required>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Interests (select at least one)</label><br>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="scenic" id="scenic">
+            <label class="form-check-label" for="scenic">Scenic Views</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="adventure" id="adventure">
+            <label class="form-check-label" for="adventure">Adventure</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="photography" id="photography">
+            <label class="form-check-label" for="photography">Photography</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="wildlife" id="wildlife">
+            <label class="form-check-label" for="wildlife">Wildlife</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="cultural" id="cultural">
+            <label class="form-check-label" for="cultural">Cultural</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="family" id="family">
+            <label class="form-check-label" for="family">Family-friendly</label>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Description</label>
+        <textarea class="form-control" name="description" id="description" rows="5" required></textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label>Featured Image</label>
+        <input type="file" class="form-control" name="featured_image" accept="image/*" required>
+    </div>
+    
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" name="featured" id="featured">
+        <label class="form-check-label" for="featured">Featured on Homepage</label>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Create Trek</button>
+    <a href="{% url 'admin_treks' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+<script>
+    CKEDITOR.replace('description');
+</script>
+{% endblock %}

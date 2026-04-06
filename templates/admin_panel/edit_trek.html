@@ -1,0 +1,137 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h2>Edit Trek</h2>
+
+<form method="post" enctype="multipart/form-data" class="mt-4">
+    {% csrf_token %}
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Title</label>
+            <input type="text" class="form-control" name="title" value="{{ trek.title }}" required>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label>Region</label>
+            <select class="form-select" name="region" required>
+                <option value="Annapurna" {% if trek.region == 'Annapurna' %}selected{% endif %}>Annapurna</option>
+                <option value="Everest" {% if trek.region == 'Everest' %}selected{% endif %}>Everest</option>
+                <option value="Langtang" {% if trek.region == 'Langtang' %}selected{% endif %}>Langtang</option>
+                <option value="Mustang" {% if trek.region == 'Mustang' %}selected{% endif %}>Mustang</option>
+                <option value="Manaslu" {% if trek.region == 'Manaslu' %}selected{% endif %}>Manaslu</option>
+                <option value="Dolpo" {% if trek.region == 'Dolpo' %}selected{% endif %}>Dolpo</option>
+                <option value="Kanchenjunga" {% if trek.region == 'Kanchenjunga' %}selected{% endif %}>Kanchenjunga</option>
+                <option value="Makalu" {% if trek.region == 'Makalu' %}selected{% endif %}>Makalu</option>
+                <option value="Rolwaling" {% if trek.region == 'Rolwaling' %}selected{% endif %}>Rolwaling</option>
+                <option value="Api-Nampa" {% if trek.region == 'Api-Nampa' %}selected{% endif %}>Api-Nampa</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label>Minimum Duration (days)</label>
+            <input type="number" class="form-control" name="min_duration" value="{{ trek.min_duration }}" required>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <label>Maximum Duration (days)</label>
+            <input type="number" class="form-control" name="max_duration" value="{{ trek.max_duration }}" required>
+        </div>
+        
+        <div class="col-md-4 mb-3">
+            <label>Max Altitude (meters)</label>
+            <input type="number" class="form-control" name="max_altitude" value="{{ trek.max_altitude }}" required>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Season</label><br>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="spring" {% if trek.season_spring %}checked{% endif %}>
+            <label class="form-check-label">Spring</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="summer" {% if trek.season_summer %}checked{% endif %}>
+            <label class="form-check-label">Summer</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="autumn" {% if trek.season_autumn %}checked{% endif %}>
+            <label class="form-check-label">Autumn</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="seasons" value="winter" {% if trek.season_winter %}checked{% endif %}>
+            <label class="form-check-label">Winter</label>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Difficulty Level</label>
+            <select class="form-select" name="difficulty" required>
+                <option value="Easy" {% if trek.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                <option value="Moderate" {% if trek.difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+                <option value="Difficult" {% if trek.difficulty == 'Difficult' %}selected{% endif %}>Difficult</option>
+                <option value="Extreme" {% if trek.difficulty == 'Extreme' %}selected{% endif %}>Extreme</option>
+            </select>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+            <label>Cost (USD)</label>
+            <input type="number" step="0.01" class="form-control" name="cost" value="{{ trek.cost }}" required>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Interests</label><br>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="scenic" {% if trek.interest_scenic %}checked{% endif %}>
+            <label class="form-check-label">Scenic Views</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="adventure" {% if trek.interest_adventure %}checked{% endif %}>
+            <label class="form-check-label">Adventure</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="photography" {% if trek.interest_photography %}checked{% endif %}>
+            <label class="form-check-label">Photography</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="wildlife" {% if trek.interest_wildlife %}checked{% endif %}>
+            <label class="form-check-label">Wildlife</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="cultural" {% if trek.interest_cultural %}checked{% endif %}>
+            <label class="form-check-label">Cultural</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="interests" value="family" {% if trek.interest_family %}checked{% endif %}>
+            <label class="form-check-label">Family-friendly</label>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label>Description</label>
+        <textarea class="form-control" name="description" id="description" rows="5" required>{{ trek.description }}</textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label>Featured Image</label>
+        <input type="file" class="form-control" name="featured_image" accept="image/*">
+        <small>Current: <img src="{{ trek.featured_image.url }}" width="100"></small>
+    </div>
+    
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" name="featured" {% if trek.featured %}checked{% endif %}>
+        <label class="form-check-label">Featured on Homepage</label>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Update Trek</button>
+    <a href="{% url 'admin_treks' %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+<script>
+    CKEDITOR.replace('description');
+</script>
+{% endblock %}

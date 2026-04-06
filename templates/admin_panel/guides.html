@@ -1,0 +1,64 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manage Guides</h2>
+    <a href="{% url 'add_guide' %}" class="btn btn-primary">Add Guide</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Profile Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for guide in guides %}
+        <tr>
+            <td>{{ guide.full_name }}</td>
+            <td>{{ guide.username }}</td>
+            <td>
+                {% if guide.guide_profile %}
+                    <span class="badge bg-success">Profile Created</span>
+                {% else %}
+                    <span class="badge bg-warning">No Profile</span>
+                {% endif %}
+            </td>
+            <td>{{ guide.date_joined|date:"M d, Y" }}</td>
+            <td>
+                <button class="btn btn-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal{{ guide.id }}">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal{{ guide.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete guide <strong>{{ guide.full_name }}</strong>? This will also remove their profile and cannot be undone.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <a href="{% url 'delete_guide' guide.id %}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center">No guides available</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

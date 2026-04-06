@@ -1,0 +1,132 @@
+{% extends 'user/base.html' %}
+
+{% block extra_css %}
+<style>
+.traveller-control { display: flex; align-items: center; gap: 10px; }
+.traveller-control input { flex: 1; text-align: center; }
+.traveller-control button { width: 40px; height: 40px; font-size: 20px; }
+.info-message { background: #e7f3ff; border-left: 4px solid #0d6efd; padding: 10px; margin-bottom: 15px; font-size: 14px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Book Your Trek</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <img src="{{ trek.featured_image.url }}" class="card-img-top" alt="{{ trek.title }}">
+                <div class="card-body">
+                    <h3>{{ trek.title }}</h3>
+                    <p><strong>Region:</strong> {{ trek.region }}</p>
+                    <p><strong>Duration:</strong> {{ trek.min_duration }}-{{ trek.max_duration }} days</p>
+                    <p><strong>Difficulty:</strong> {{ trek.difficulty }}</p>
+                    <p><strong>Cost:</strong> ${{ trek.cost }}</p>
+                    <div>{{ trek.description|safe }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Booking Details</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label>Start Date</label>
+                            <input type="date" class="form-control" name="start_date" id="startDate" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>Number of Travellers</label>
+                            <div class="traveller-control">
+                                <button type="button" class="btn btn-outline-secondary" onclick="decreaseTravellers()">−</button>
+                                <input type="number" class="form-control" name="num_travellers" id="numTravellers" min="1" max="15" value="1" required>
+                                <button type="button" class="btn btn-outline-secondary" onclick="increaseTravellers()">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>Select Guides (Priority Order)</label>
+                            <div class="info-message">
+                                <i class="fas fa-info-circle"></i> Selecting additional guides increases the chance of trek confirmation if the primary guide declines.
+                            </div>
+                            <select class="form-select mb-2" name="guide" id="guide1" required>
+                                <option value="">1st Guide (Required)</option>
+                                {% for guide in guides %}
+                                <option value="{{ guide.id }}">{{ guide.user.full_name }} ({{ guide.experience }} years exp)</option>
+                                {% endfor %}
+                            </select>
+                            <select class="form-select mb-2" name="guide2" id="guide2">
+                                <option value="">2nd Guide (Optional)</option>
+                                {% for guide in guides %}
+                                <option value="{{ guide.id }}">{{ guide.user.full_name }} ({{ guide.experience }} years exp)</option>
+                                {% endfor %}
+                            </select>
+                            <select class="form-select" name="guide3" id="guide3">
+                                <option value="">3rd Guide (Optional)</option>
+                                {% for guide in guides %}
+                                <option value="{{ guide.id }}">{{ guide.user.full_name }} ({{ guide.experience }} years exp)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>Special Requests (Optional)</label>
+                            <textarea class="form-control" name="special_requests" rows="3"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-lg w-100">Submit Booking Request</button>
+                        <small class="text-muted d-block mt-2">Your booking will be sent to the guide for approval. Payment will be available after approval.</small>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+const minDate = tomorrow.toISOString().split('T')[0];
+document.getElementById('startDate').setAttribute('min', minDate);
+
+function increaseTravellers() {
+    const input = document.getElementById('numTravellers');
+    const current = parseInt(input.value);
+    if (current < 15) input.value = current + 1;
+}
+
+function decreaseTravellers() {
+    const input = document.getElementById('numTravellers');
+    const current = parseInt(input.value);
+    if (current > 1) input.value = current - 1;
+}
+
+const guide1 = document.getElementById('guide1');
+const guide2 = document.getElementById('guide2');
+const guide3 = document.getElementById('guide3');
+
+function filterGuides() {
+    const selected1 = guide1.value;
+    const selected2 = guide2.value;
+    
+    Array.from(guide2.options).forEach(opt => {
+        opt.disabled = opt.value && opt.value === selected1;
+    });
+    
+    Array.from(guide3.options).forEach(opt => {
+        opt.disabled = opt.value && (opt.value === selected1 || opt.value === selected2);
+    });
+}
+
+guide1.addEventListener('change', filterGuides);
+guide2.addEventListener('change', filterGuides);
+filterGuides();
+</script>
+{% endblock %}

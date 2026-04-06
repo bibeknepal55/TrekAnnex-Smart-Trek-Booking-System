@@ -1,0 +1,77 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <img src="{{ trek.featured_image.url }}" class="img-fluid rounded mb-4" alt="{{ trek.title }}">
+            
+            <h2>{{ trek.title }}</h2>
+            
+            <div class="row my-4">
+                <div class="col-md-3">
+                    <strong><i class="fas fa-map-marker-alt"></i> Region</strong>
+                    <p>{{ trek.region }}</p>
+                </div>
+                <div class="col-md-3">
+                    <strong><i class="fas fa-clock"></i> Duration</strong>
+                    <p>{{ trek.min_duration }}-{{ trek.max_duration }} days</p>
+                </div>
+                <div class="col-md-3">
+                    <strong><i class="fas fa-mountain"></i> Max Altitude</strong>
+                    <p>{{ trek.max_altitude }}m</p>
+                </div>
+                <div class="col-md-3">
+                    <strong><i class="fas fa-signal"></i> Difficulty</strong>
+                    <p>{{ trek.difficulty }}</p>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <h4>Description</h4>
+                <div>{{ trek.description|safe }}</div>
+            </div>
+            
+            <div class="mb-4">
+                <h4>Best Seasons</h4>
+                <p>
+                    {% if trek.season_spring %}<span class="badge bg-success">Spring</span>{% endif %}
+                    {% if trek.season_summer %}<span class="badge bg-warning">Summer</span>{% endif %}
+                    {% if trek.season_autumn %}<span class="badge bg-info">Autumn</span>{% endif %}
+                    {% if trek.season_winter %}<span class="badge bg-primary">Winter</span>{% endif %}
+                </p>
+            </div>
+            
+            <div class="mb-4">
+                <h4>Interests</h4>
+                <p>
+                    {% if trek.interest_scenic %}<span class="badge bg-secondary">Scenic Views</span>{% endif %}
+                    {% if trek.interest_adventure %}<span class="badge bg-secondary">Adventure</span>{% endif %}
+                    {% if trek.interest_photography %}<span class="badge bg-secondary">Photography</span>{% endif %}
+                    {% if trek.interest_wildlife %}<span class="badge bg-secondary">Wildlife</span>{% endif %}
+                    {% if trek.interest_cultural %}<span class="badge bg-secondary">Cultural</span>{% endif %}
+                    {% if trek.interest_family %}<span class="badge bg-secondary">Family-friendly</span>{% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h3 class="text-center mb-3">${{ trek.cost }}</h3>
+                    <p class="text-center text-muted">per person</p>
+                    <a href="{% url 'book_trek' trek.id %}" class="btn btn-primary btn-lg w-100">Book Now</a>
+                    <hr>
+                    <h5>Quick Info</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Region:</strong> {{ trek.region }}</li>
+                        <li><strong>Duration:</strong> {{ trek.min_duration }}-{{ trek.max_duration }} days</li>
+                        <li><strong>Altitude:</strong> {{ trek.max_altitude }}m</li>
+                        <li><strong>Difficulty:</strong> {{ trek.difficulty }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

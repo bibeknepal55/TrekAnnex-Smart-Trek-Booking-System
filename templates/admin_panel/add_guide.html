@@ -1,0 +1,36 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h2>Add Guide</h2>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label>Full Name</label>
+                <input type="text" class="form-control" name="full_name" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Guide Username</label>
+                <input type="text" class="form-control" name="username" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Confirm Password</label>
+                <input type="password" class="form-control" name="confirm_password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Add Guide</button>
+            <a href="{% url 'admin_guides' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

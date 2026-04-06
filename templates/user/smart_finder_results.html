@@ -1,0 +1,106 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Your Perfect Trek Matches</h2>
+    
+    {% if results %}
+    <div class="row">
+        {% for result in results %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="position-relative">
+                    <img src="{{ result.trek.featured_image.url }}" class="card-img-top" alt="{{ result.trek.title }}" style="height: 200px; object-fit: cover;">
+                    <span class="badge bg-success position-absolute top-0 end-0 m-2">{{ result.score }}% Match</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ result.trek.title }}</h5>
+                    <p class="card-text">
+                        <small><i class="fas fa-map-marker-alt"></i> {{ result.trek.region }}</small><br>
+                        <small><i class="fas fa-clock"></i> {{ result.trek.min_duration }}-{{ result.trek.max_duration }} days</small><br>
+                        <small><i class="fas fa-signal"></i> {{ result.trek.difficulty }}</small><br>
+                        <small><i class="fas fa-dollar-sign"></i> {{ result.trek.cost }}</small>
+                    </p>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success flex-fill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#trekModal{{ result.trek.id }}">
+                            View Details
+                        </button>                       
+                        <a href="{% url 'book_trek' result.trek.id %}" class="btn btn-primary flex-fill"> Book Now </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal fade" id="trekModal{{ result.trek.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                    
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{ result.trek.title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <img src="{{ result.trek.featured_image.url }}" class="img-fluid mb-3" style="height:400px; width:800px; object-fit:cover;">
+                            <p>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <strong>Region:</strong> {{ result.trek.region }}
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Duration:</strong> {{ result.trek.min_duration }} - {{ result.trek.max_duration }} days
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <strong>Difficulty Level:</strong> {{ result.trek.difficulty }}
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Maximum Altitude:</strong> {{ result.trek.max_altitude }} meters
+                                    </div>
+                                </div>
+                                <p>
+                                <strong>Recommended Season(s):</strong>
+                                    {% if result.trek.season_spring %}Spring{% endif %}
+                                    {% if result.trek.season_summer %}{% if result.trek.season_spring %}| {% endif %}Summer{% endif %}
+                                    {% if result.trek.season_autumn %}{% if result.trek.season_spring or result.trek.season_summer %}| {% endif %}Autumn{% endif %}
+                                    {% if result.trek.season_winter %}{% if result.trek.season_spring or result.trek.season_summer or result.trek.season_autumn %}| {% endif %}Winter{% endif %}
+                                </p>  
+                                <strong>Interests:</strong>
+                                    {% if result.trek.interest_scenic %}Scenic Views{% endif %}
+                                    {% if result.trek.interest_adventure %}{% if result.trek.interest_scenic %} | {% endif %}Adventure{% endif %}
+                                    {% if result.trek.interest_photography %}{% if result.trek.interest_scenic or result.trek.interest_adventure %} | {% endif %}Photography{% endif %}
+                                    {% if result.trek.interest_wildlife %}{% if result.trek.interest_scenic or result.trek.interest_adventure or result.trek.interest_photography %} | {% endif %}Wildlife{% endif %}
+                                    {% if result.trek.interest_cultural %}{% if result.trek.interest_scenic or result.trek.interest_adventure or result.trek.interest_photography or result.trek.interest_wildlife %} | {% endif %}Cultural{% endif %}
+                                    {% if result.trek.interest_family %}{% if result.trek.interest_scenic or result.trek.interest_adventure or result.trek.interest_photography or result.trek.interest_wildlife or result.trek.interest_cultural %} | {% endif %}Family Friendly{% endif %}
+                                    <br><br>
+                                {{ result.trek.description }}
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <strong>Total Cost (per person): ${{ result.trek.cost }}</strong>
+                            <a href="{% url 'book_trek' result.trek.id %}" class="btn btn-primary">Book Now</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h4>No matching treks found</h4>
+        <p>Try adjusting your preferences</p>
+    </div>
+    {% endif %}
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'smart_finder' %}" class="btn btn-secondary me-2">Try Again</a>
+        <a href="{% url 'explore' %}" class="btn btn-primary">Explore All Treks</a>
+    </div>
+</div>
+{% endblock %}

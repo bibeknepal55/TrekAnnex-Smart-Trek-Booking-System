@@ -1,0 +1,63 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Complete Payment</h4>
+                </div>
+                <div class="card-body">
+                    <h5>{{ booking.trek.title }}</h5>
+                    <hr>
+                    
+                    <div class="mb-3">
+                        <strong>Trek Cost:</strong> ${{ booking.trek.cost }} per person<br>
+                        <strong>Number of Travellers:</strong> {{ booking.num_travellers }}<br>
+                        <strong>Total Cost:</strong> NPR {{ total_cost }}<br>
+                        {% if booking.paid_amount > 0 %}
+                            <strong>Already Paid:</strong> NPR {{ booking.paid_amount }}<br>
+                            <strong>Remaining Amount:</strong> NPR {{ remaining_amount }}<br>
+                        {% else %}
+                            <strong>Minimum Payment (20%):</strong> NPR {{ min_payment }}<br>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        {% if booking.paid_amount > 0 %}
+                            Pay the remaining amount to complete your booking. Amount will be charged in NPR via eSewa.
+                        {% else %}
+                            You must pay at least 20% of the total cost to confirm your booking. Amount will be charged in NPR via eSewa.
+                        {% endif %}
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label>Payment Percentage (20% - 100%)</label>
+                            <input type="number" class="form-control" name="percentage" min="20" max="100" value="{% if booking.paid_amount > 0 %}100{% else %}20{% endif %}" required>
+                            <small class="text-muted">
+                                {% if booking.paid_amount > 0 %}
+                                    Enter percentage of remaining amount to pay
+                                {% else %}
+                                    Enter percentage of total cost you want to pay now (minimum 20%)
+                                {% endif %}
+                            </small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-lg w-100">
+                            <i class="fas fa-credit-card"></i> Proceed to eSewa Payment
+                        </button>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="{% url 'user_bookings' %}" class="btn btn-link">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

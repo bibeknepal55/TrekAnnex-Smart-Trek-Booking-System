@@ -1,0 +1,60 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h2>Manage Guide Profile</h2>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email" value="{{ profile.email }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Phone Number</label>
+                <input type="text" class="form-control" name="phone" value="{{ profile.phone }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Experience (years)</label>
+                <input type="number" class="form-control" name="experience" value="{{ profile.experience }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Languages (comma-separated)</label>
+                <input type="text" class="form-control" name="languages" value="{{ profile.languages }}" placeholder="English, Nepali, Hindi" required>
+            </div>
+            
+            <div class="mb-3">
+                <label>Bio</label>
+                <textarea class="form-control" name="bio" rows="4" required>{{ profile.bio }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label>Availability</label>
+                <select class="form-select" name="availability" required>
+                    <option value="Available" {% if profile.availability == 'Available' %}selected{% endif %}>Available</option>
+                    <option value="On a Trek" {% if profile.availability == 'On a Trek' %}selected{% endif %}>On a Trek</option>
+                    <option value="Busy" {% if profile.availability == 'Busy' %}selected{% endif %}>Busy</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label>Profile Picture</label>
+                <input type="file" class="form-control" name="profile_picture" accept="image/*">
+                {% if profile.profile_picture %}
+                    <small>Current: <img src="{{ profile.profile_picture.url }}" width="100" class="mt-2"></small>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">{% if profile %}Update{% else %}Create{% endif %} Profile</button>
+            {% if profile %}
+                <a href="{% url 'delete_guide_profile' %}" class="btn btn-danger" onclick="return confirm('Delete your profile?')">Delete Profile</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

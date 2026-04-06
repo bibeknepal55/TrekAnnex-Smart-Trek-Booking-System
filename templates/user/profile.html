@@ -1,0 +1,41 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">My Profile</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" name="full_name" value="{{ user.full_name }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>Username</label>
+                            <input type="text" class="form-control" name="username" value="{{ user.username }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>New Password (leave blank to keep current)</label>
+                            <input type="password" class="form-control" name="new_password">
+                            <small class="text-muted">Min 8 chars, uppercase, lowercase, number, special character</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

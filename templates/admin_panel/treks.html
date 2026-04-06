@@ -1,0 +1,42 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manage Treks</h2>
+    <a href="{% url 'create_trek' %}" class="btn btn-primary">Create Trek</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Region</th>
+            <th>Duration</th>
+            <th>Cost</th>
+            <th>Difficulty</th>
+            <th>Featured</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trek in treks %}
+        <tr>
+            <td><img src="{{ trek.featured_image.url }}" width="60" height="40" style="object-fit: cover;"></td>
+            <td>{{ trek.title }}</td>
+            <td>{{ trek.region }}</td>
+            <td>{{ trek.min_duration }}-{{ trek.max_duration }} days</td>
+            <td>${{ trek.cost }}</td>
+            <td>{{ trek.difficulty }}</td>
+            <td>{% if trek.featured %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</td>
+            <td>
+                <a href="{% url 'edit_trek' trek.id %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'delete_trek' trek.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this trek?')">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="text-center">No treks available</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

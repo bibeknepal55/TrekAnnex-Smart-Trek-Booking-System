@@ -1,0 +1,63 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">eSewa Payment</h4>
+                </div>
+                <div class="card-body text-center">
+                    <img src="https://esewa.com.np/common/images/esewa_logo.png" alt="eSewa" style="max-width: 200px;" class="mb-4">
+                    
+                    <div class="alert alert-info mb-4">
+                        <h5>Payment Summary</h5>
+                        <p class="mb-1"><strong>Trek:</strong> {{ booking.trek.title }}</p>
+                        <p class="mb-1"><strong>Travellers:</strong> {{ booking.num_travellers }}</p>
+                        <h4 class="mt-3 mb-0"><strong>Amount: NPR {{ amount|floatformat:2 }}</strong></h4>
+                        <p class="text-muted mt-2">Transaction ID: {{ pid }}</p>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i> Redirecting to eSewa payment gateway...
+                    </div>
+                    
+                    <!-- eSewa ePay Form -->
+                    <form action="{{ gateway_url }}" method="POST" id="esewaForm">
+                        <input value="{{ amount }}" name="amt" type="hidden">
+                        <input value="{{ amount }}" name="tAmt" type="hidden">
+                        <input value="0" name="txAmt" type="hidden">
+                        <input value="0" name="psc" type="hidden">
+                        <input value="0" name="pdc" type="hidden">
+                        <input value="{{ scd }}" name="scd" type="hidden">
+                        <input value="{{ pid }}" name="pid" type="hidden">
+                        <input value="{{ success_url }}" type="hidden" name="su">
+                        <input value="{{ failure_url }}" type="hidden" name="fu">
+                        
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-lock"></i> Pay NPR {{ amount|floatformat:2 }} with eSewa
+                        </button>
+                    </form>
+                    
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt"></i> Secure payment powered by eSewa
+                        </small>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'user_bookings' %}" class="btn btn-link">Cancel Payment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    setTimeout(function() {
+        document.getElementById('esewaForm').submit();
+    }, 2000);
+</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5>Total Treks</h5>
+                <h2>{{ total_treks }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5>Total Bookings</h5>
+                <h2>{{ total_bookings }}</h2>
+            </div>
+        </div>
+    </div>
+    {% if user.role != 'guide' %}
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5>Total Users</h5>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5>Total Guides</h5>
+                <h2>{{ total_guides }}</h2>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% if user.role != 'guide' %}
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1 small">TOTAL REVENUE</p>
+                        <h3 class="fw-bold mb-0">$ {{ revenue_total|floatformat:2 }}</h3>
+                    </div>
+                    <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                        <i class="fas fa-coins fa-2x text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1 small">THIS MONTH</p>
+                        <h3 class="fw-bold mb-0">$ {{ revenue_month|floatformat:2 }}</h3>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                        <i class="fas fa-calendar-alt fa-2x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-muted mb-1 small">TODAY</p>
+                        <h3 class="fw-bold mb-0">$ {{ revenue_today|floatformat:2 }}</h3>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                        <i class="fas fa-calendar-day fa-2x text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-5">
+    <h4>Recent Bookings</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Trek</th>
+                <th>Start Date</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in recent_bookings %}
+            <tr>
+                <td>{{ booking.user.username }}</td>
+                <td>{{ booking.trek.title }}</td>
+                <td>{{ booking.start_date }}</td>
+                <td>
+                    {% if booking.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif booking.status == 'Approved' %}
+                        <span class="badge bg-primary">Approved</span>
+                    {% elif booking.status == 'Confirmed' %}
+                        <span class="badge bg-success">Confirmed</span>
+                    {% elif booking.status == 'Cancelled' %}
+                        <span class="badge bg-danger">Cancelled</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ booking.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ booking.created_at|date:"M d, Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center">No bookings yet</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

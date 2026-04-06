@@ -1,0 +1,75 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h2>Manage Bookings</h2>
+
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Trek</th>
+            <th>Guide</th>
+            <th>Start Date</th>
+            <th>Travellers</th>
+            <th>Booking Status</th>
+            <th>Payment Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.user.username }}</td>
+            <td>{{ booking.trek.title }}</td>
+            <td>
+                {{ booking.guide.user.full_name }}
+                {% if booking.guide2 %}<br><small class="text-muted">Backup: {{ booking.guide2.user.full_name }}</small>{% endif %}
+                {% if booking.guide3 %}<br><small class="text-muted">Backup: {{ booking.guide3.user.full_name }}</small>{% endif %}
+            </td>
+            <td>{{ booking.start_date }}</td>
+            <td>{{ booking.num_travellers }}</td>
+            <td>
+                <span class="badge bg-{% if booking.status == 'Confirmed' %}success{% elif booking.status == 'Approved' %}info{% elif booking.status == 'Pending' %}warning{% else %}danger{% endif %}">
+                    {{ booking.status }}
+                </span>
+            </td>
+            <td>
+                <span class="badge bg-{% if booking.payment_status == 'Paid' %}success{% elif booking.payment_status == 'Partial Paid' %}warning{% elif booking.payment_status == 'Failed' %}danger{% else %}secondary{% endif %}">
+                    {{ booking.payment_status }}
+                </span>
+                {% if booking.paid_amount > 0 %}
+                    <br><small>NPR {{ booking.paid_amount }}</small>
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="{% url 'update_booking_status' booking.id %}" class="d-inline">
+                    {% csrf_token %}
+                    {% if user.role == 'guide' %}
+                        {% if booking.status == 'Pending' %}
+                            <select name="status" class="form-select form-select-sm d-inline-block w-auto" onchange="if(confirm('Are you sure? Approving will change your status to On a Trek')) this.form.submit()">
+                                <option value="Pending" selected>Pending</option>
+                                <option value="Approved">Approve</option>
+                                <option value="Cancelled">Cancel</option>
+                            </select>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ booking.status }} (Locked)</span>
+                        {% endif %}
+                    {% else %}
+                        {# Admin/SuperAdmin can only cancel #}
+                        {% if booking.status != 'Cancelled' %}
+                            <button type="submit" name="status" value="Cancelled" class="btn btn-danger btn-sm" onclick="return confirm('Cancel this booking?')">
+                                Cancel
+                            </button>
+                        {% else %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% endif %}
+                    {% endif %}
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" class="text-center">No bookings available</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

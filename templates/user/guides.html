@@ -1,0 +1,64 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Our Expert Guides</h2>
+    
+    <div class="text-center mb-4">
+        <a href="{% url 'smart_finder' %}" class="btn btn-warning me-2">Find Your Best Trek</a>
+        <a href="{% url 'explore' %}" class="btn btn-primary">Book Your Trek Now</a>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <select class="form-select" name="availability">
+                        <option value="">All Availability</option>
+                        <option value="Available" {% if availability == 'Available' %}selected{% endif %}>Available</option>
+                        <option value="On a Trek" {% if availability == 'On a Trek' %}selected{% endif %}>On a Trek</option>
+                        <option value="Busy" {% if availability == 'Busy' %}selected{% endif %}>Busy</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" class="form-control" name="experience" value="{{ experience }}" placeholder="Min Experience (years)">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'guides_list' %}" class="btn btn-secondary w-100">Reset Filters</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% for guide in guides %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if guide.profile_picture %}
+                <img src="{{ guide.profile_picture.url }}" class="card-img-top" alt="{{ guide.user.full_name }}" style="height: 250px; object-fit: cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/300x250" class="card-img-top" alt="{{ guide.user.full_name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ guide.user.full_name }}</h5>
+                    <p class="card-text">
+                        <strong>Experience:</strong> {{ guide.experience }} years<br>
+                        <strong>Languages:</strong> {{ guide.languages }}<br>
+                        <strong>Availability:</strong> 
+                        <span class="badge bg-{% if guide.availability == 'Available' %}success{% elif guide.availability == 'On a Trek' %}warning{% else %}danger{% endif %}">
+                            {{ guide.availability }}
+                        </span>
+                    </p>
+                    <p>{{ guide.bio|truncatewords:20 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No guides available</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

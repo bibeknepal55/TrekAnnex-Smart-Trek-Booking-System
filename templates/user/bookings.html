@@ -1,0 +1,82 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">My Bookings</h2>
+    
+    <div class="text-center mb-4">
+        <a href="{% url 'smart_finder' %}" class="btn btn-warning me-2">Find Your Best Trek</a>
+        <a href="{% url 'explore' %}" class="btn btn-primary">Book Your Trek Now</a>
+    </div>
+    
+    {% if bookings %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Trek</th>
+                    <th>Start Date</th>
+                    <th>Travellers</th>
+                    <th>Guide</th>
+                    <th>Booking Status</th>
+                    <th>Payment Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ booking.trek.title }}</td>
+                    <td>{{ booking.start_date }}</td>
+                    <td>{{ booking.num_travellers }}</td>
+                    <td>
+                        {{ booking.guide.user.full_name }}
+                        {% if booking.guide2 %}<br><small class="text-muted">Backup: {{ booking.guide2.user.full_name }}</small>{% endif %}
+                        {% if booking.guide3 %}<br><small class="text-muted">Backup: {{ booking.guide3.user.full_name }}</small>{% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-{% if booking.status == 'Confirmed' %}success{% elif booking.status == 'Approved' %}info{% elif booking.status == 'Pending' %}warning{% else %}danger{% endif %}">
+                            {{ booking.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge bg-{% if booking.payment_status == 'Paid' %}success{% elif booking.payment_status == 'Partial Paid' %}warning{% elif booking.payment_status == 'Failed' %}danger{% else %}secondary{% endif %}">
+                            {{ booking.payment_status }}
+                        </span><br>
+                        {% if booking.paid_amount > 0 %}
+                            <small>Paid: NPR {{ booking.paid_amount }}</small><br>
+                        {% endif %}
+                        {% if booking.remaining_amount > 0 %}
+                            <small class="text-muted">Remaining: NPR {{ booking.remaining_amount }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if booking.status == 'Pending' %}
+                            <span class="text-muted">Awaiting Guide Approval</span>
+                        {% elif booking.status == 'Approved' and booking.payment_status == 'Not Initiated' %}
+                            <a href="{% url 'payment_page' booking.id %}" class="btn btn-success btn-sm">Pay to Confirm</a>
+                        {% elif booking.status == 'Approved' and booking.payment_status == 'Failed' %}
+                            <a href="{% url 'payment_page' booking.id %}" class="btn btn-warning btn-sm">Retry Payment</a>
+                        {% elif booking.status == 'Confirmed' and booking.payment_status == 'Partial Paid' %}
+                            <a href="{% url 'payment_page' booking.id %}" class="btn btn-primary btn-sm">Pay Remaining Amount</a>
+                        {% elif booking.status == 'Confirmed' and booking.payment_status == 'Paid' %}
+                            <span class="badge bg-success">Fully Paid</span>
+                        {% elif booking.status == 'Cancelled' %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h4>No booking history available</h4>
+        <p>Start exploring and book your first trek!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
