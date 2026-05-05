@@ -126,12 +126,6 @@ All passwords must have: 8+ characters, uppercase, lowercase, number, and specia
 
 ---
 
-## 📸 Screenshots
-
-> _Add screenshots here after deployment_
-
----
-
 ## 🔮 Future Enhancements
 
 - [ ] Payment gateway (live eSewa / Khalti)
