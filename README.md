@@ -90,12 +90,7 @@ python manage.py runserver
 ```
 
 ### 7. Access the app
-| URL | Description |
-|-----|-------------|
-| http://127.0.0.1:8000/ | User site |
-| http://127.0.0.1:8000/admin-login/ | Admin panel |
-
----
+Use the localhost link shown at the terminal
 
 ## 📁 Project Structure
 
