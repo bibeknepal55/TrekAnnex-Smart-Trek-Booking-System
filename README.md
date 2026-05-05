@@ -140,8 +140,3 @@ All passwords must have: 8+ characters, uppercase, lowercase, number, and specia
 
 This project is built for educational purposes as a college project.
 
----
-
-## 📬 Contact
-
-For queries: mail@trekbooking.com
